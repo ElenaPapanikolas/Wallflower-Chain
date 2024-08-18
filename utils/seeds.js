@@ -5,24 +5,23 @@ connection.on('error', (err) => err);
 
 connection.once('open', async () => {
     console.log('connected');
+
+    try {
       // Delete the collections if they exist
-      let userCheck  = await connection.db.listCollections({ name: 'user' }).toArray();
-      if (userCheck.length) {
-        await connection.dropCollection('user');
+      const collections = await connection.db.listCollections().toArray();
+
+      for (const collection of collections) {
+        if (collection.name === 'users' || collection.name === 'thoughts') {
+          await connection.db.dropCollection(collection.name);
+          console.log(`Dropped collection: ${collection.name}`);
+        }
       }
-  
-      let thoughtCheck = await connection.db.listCollections({ name: 'thought' }).toArray();
-      if (thoughtCheck.length) {
-        await connection.dropCollection('thought');
-      }
 
+      await User.create();
+      await Thought.create();
 
-        const users = await User.find();
-        const thoughts = await Thought.find();
-
-        console.log('Collections created:', users, thoughts);
-
-     
-
-
+      console.log('Collections created:');
+    } catch (error) {
+      console.error('Error:', error);
+    }
     });     
