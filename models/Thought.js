@@ -1,30 +1,24 @@
 // Importing Schema and model objects from mongoose, importing Reaction schema, importing moment for date formatting
 const { Schema, model } = require('mongoose');
-const Reaction = require('./Reaction');
+const reactionSchema = require('./Reaction');
 const moment = require('moment');
 
 // Creating thoughtSchema
 const thoughtSchema = new Schema(
     {
         thoughtText: { type: String, required: true, minLength: [1], maxLength: [280] },
-        createdAt: { type: Date, default: Date.now },
+        createdAt: { type: Date, default: Date.now, get: (date) => moment(date).format('MM/DD/YYYY') },
         username: { type: String, required: true },
-        reactions: [Reaction],
+        reactions: [reactionSchema],
     },
     {
         toJSON: {
             virtuals: true, // Virtual properties on the schema will be included when schema is converted to JSON
+            getters: true, // Will apply any getters defined in schema when document's properties are accessed
         },
         id: false, // Mongoose will not automatically create an id field for each document
     }
 );
-
-// Virtual that calculates and returns a formatted timestamp based on the createAt field
-thoughtSchema
-    .virtual('timestampFormat')
-    .get(function() {
-        return moment(this.createdAt).format('MM/DD/YYYY');
-});
 
 // Virtual that gets length of reactions array to return reaction count
 thoughtSchema

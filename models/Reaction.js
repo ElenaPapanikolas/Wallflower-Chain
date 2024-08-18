@@ -7,22 +7,16 @@ const reactionSchema = new Schema(
     {
         reactionBody: { type: String, required: true, maxLength: [280] },
         username: { type: String, required: true },
-        createdAt: { type: Date, default: Date.now },
+        createdAt: { type: Date, default: Date.now, get: (date) => moment(date).format('MM/DD/YYYY') },
     }, 
     {
         toJSON: {
             virtuals: true, // Virtual properties on the schema will be included when schema is converted to JSON
+            getters: true,
         },
         id: false, // Mongoose will not automatically create an id field for each document
     }
 );
-
-// Virtual that calculates and returns a formatted timestamp based on the createAt field
-reactionSchema
-    .virtual('timestampFormat')
-    .get(function () {
-        return moment(this.createdAt).format('MM/DD/YYYY');
-    });
 
 // Exporting reactionSchema    
 module.exports = reactionSchema;

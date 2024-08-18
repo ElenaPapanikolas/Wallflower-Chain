@@ -1,4 +1,4 @@
-// Importing Express Router and imports API routes
+// Importing Express Router and importing API routes
 const router = require('express').Router();
 const apiRoutes = require('./api');
 
@@ -10,5 +10,5 @@ router.use((req, res) => {
     return res.send('Wrong Route!');
 });
 
-// Exports router
+// Exporting router
 module.exports = router;
