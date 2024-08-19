@@ -7,7 +7,7 @@ connection.once('open', async () => {
     console.log('connected');
 
     try {
-      // Delete the collections if they exist
+      // Deletes the collections if they exist
       const collections = await connection.db.listCollections().toArray();
 
       for (const collection of collections) {
@@ -16,7 +16,7 @@ connection.once('open', async () => {
           console.log(`Dropped collection: ${collection.name}`);
         }
       }
-
+      // Creates collections again after dropping
       await User.create();
       await Thought.create();
 
